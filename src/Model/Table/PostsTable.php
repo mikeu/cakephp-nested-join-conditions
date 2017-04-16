@@ -23,6 +23,27 @@ class PostsTable extends Table
 {
 
     /**
+     * Find posts that are either from a given group or public (or both).
+     *
+     * @param \Cake\ORM\Query $query The query to add Find restrictions to.
+     * @param array $options Parameters to control the query, including 'group' id.
+     * @return \Cake\ORM\Query
+     */
+    public function findForGroup(Query $query, array $options)
+    {
+        $groupId = isset($options['groupId']) ?: -1;
+
+        return $query->contain([
+            'Categories' => function ($q) use ($groupId) {
+                return $q->leftJoinWith('Groups')
+                         ->where(['Categories.is_public' => TRUE])
+                         ->orWhere(['Groups.id' => $groupId]);
+            }
+        ]);
+    }
+
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.

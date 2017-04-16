@@ -18,10 +18,7 @@ class PostsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Categories']
-        ];
-        $posts = $this->paginate($this->Posts);
+        $posts = $this->Posts->find('forGroup', ['groupId' => 1]);
 
         $this->set(compact('posts'));
         $this->set('_serialize', ['posts']);
